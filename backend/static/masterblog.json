@@ -1,0 +1,179 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Masterblog API",
+    "version": "1.0.0"
+  },
+  "host": "localhost:5001",
+  "basePath": "/",
+  "schemes": ["http"],
+  "tags": [
+    {
+      "name": "Post",
+      "description": "Post API - CRUD operations"
+    }
+  ],
+  "paths": {
+    "/api/posts": {
+      "get": {
+        "summary": "Returns all posts, optionally sorted by title or content",
+        "tags": ["Post"],
+        "parameters": [
+          {
+            "name": "sort",
+            "in": "query",
+            "type": "string",
+            "description": "Sort by 'title' or 'content'"
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "type": "string",
+            "description": "Sort direction: 'asc' or 'desc'"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Post" }
+            }
+          },
+          "400": {
+            "description": "Invalid sort parameters"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new post",
+        "tags": ["Post"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PostInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Post created"
+          },
+          "400": {
+            "description": "Missing title or content"
+          }
+        }
+      }
+    },
+    "/api/posts/{post_id}": {
+      "put": {
+        "summary": "Update a post by ID",
+        "tags": ["Post"],
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PostInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Post updated"
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a post by ID",
+        "tags": ["Post"],
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Post deleted"
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        }
+      }
+    },
+    "/api/posts/search": {
+      "get": {
+        "summary": "Search posts by title and/or content",
+        "tags": ["Post"],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "type": "string",
+            "description": "Title query"
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "type": "string",
+            "description": "Content query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching posts",
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Post" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Post": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      }
+    },
+    "PostInput": {
+      "type": "object",
+      "required": ["title", "content"],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
