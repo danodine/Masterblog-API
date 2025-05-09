@@ -14,11 +14,23 @@ POSTS = [
 def get_posts():
     if request.method == 'POST':
         data = request.get_json()
+        if not  data.get('title') or not data.get('content'):
+            return "Post must have a title and content", 404,
         title = data.get('title')
         content = data.get('content')
         new_id = POSTS[-1]["id"] + 1
         POSTS.append({'id': new_id, 'title': title, 'content': content})
     return jsonify(POSTS)
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return jsonify({"error": "Not Found"}), 404
+
+
+@app.errorhandler(405)
+def method_not_allowed_error(error):
+    return jsonify({"error": "Method Not Allowed"}), 405
 
 
 if __name__ == '__main__':
