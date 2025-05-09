@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -10,8 +10,14 @@ POSTS = [
 ]
 
 
-@app.route('/api/posts', methods=['GET'])
+@app.route('/api/posts', methods=['GET', 'POST'])
 def get_posts():
+    if request.method == 'POST':
+        data = request.get_json()
+        title = data.get('title')
+        content = data.get('content')
+        new_id = POSTS[-1]["id"] + 1
+        POSTS.append({'id': new_id, 'title': title, 'content': content})
     return jsonify(POSTS)
 
 
