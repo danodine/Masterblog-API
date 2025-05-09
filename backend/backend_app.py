@@ -22,6 +22,19 @@ def get_posts():
         new_id = POSTS[-1]["id"] + 1
         POSTS.append({'id': new_id, 'title': title, 'content': content})
 
+    sort_field = request.args.get('sort')
+    direction = request.args.get('direction', 'asc')
+
+    if sort_field:
+        if sort_field not in ['title', 'content']:
+            return jsonify({"error": "Invalid sort field. Use 'title' or 'content'."}), 400
+        if direction not in ['asc', 'desc']:
+            return jsonify({"error": "Invalid direction. Use 'asc' or 'desc'."}), 400
+
+        reverse = direction == 'desc'
+        sorted_posts = sorted(POSTS, key=lambda post: post[sort_field].lower(), reverse=reverse)
+        return jsonify(sorted_posts), 200
+
     return jsonify(POSTS), 201
 
 
