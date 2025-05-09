@@ -56,6 +56,20 @@ def update_posts(post_id):
     return jsonify(POSTS), 201
 
 
+@app.route('/api/posts/search', methods=['GET'])
+def search_posts():
+    title_query = request.args.get('title', '').lower()
+    content_query = request.args.get('content', '').lower()
+
+    matching_posts = [
+        post for post in POSTS
+        if (title_query in post['title'].lower() if title_query else True) and
+           (content_query in post['content'].lower() if content_query else True)
+    ]
+
+    return jsonify(matching_posts), 200
+
+
 @app.errorhandler(404)
 def not_found_error(error):
     return jsonify({"error": "Not Found"}), 404
